@@ -1,5 +1,6 @@
-const { Pool, Client } = require("pg")
 require("dotenv").config();
+const { Pool, Client } = require('pg')
+
 
 const pool = new Pool({
     user: process.env.DBUSER,
@@ -9,10 +10,7 @@ const pool = new Pool({
     port: process.env.DBPORT
 })
 
-pool.query('SELECT NOW()', (err, res) => {
-    console.log(err, res)
-    pool.end()
-})
+
 
 const client = new Client({
     user: process.env.DBUSER,
@@ -23,14 +21,8 @@ const client = new Client({
 })
 client.connect()
 
-client.query('SELECT NOW()', (err, res) => {
-    console.log(err, res)
-    client.end()
-})
+
 
 module.exports = {
-    query: (text, params, callback) => {
-        return pool.query(text, params, callback)
-    }
-}
-
+    query: (text, params) => pool.query(text, params),
+  }
