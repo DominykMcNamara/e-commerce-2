@@ -48,7 +48,11 @@ const router = new Router();
 router.get("/", async (req, res) => {
   try {
     const { rows } = await db.query("SELECT * FROM product");
-    res.status(200).send(rows);
+    if (rows.length === 0) {
+      res.status(200).send("There are currently no products");
+    } else {
+      res.status(200).send(rows);
+    }
   } catch {
     res.status(404).send("Cannot find products.");
   }
@@ -101,7 +105,11 @@ router.get("/:productId", async (req, res) => {
       "SELECT * FROM product WHERE product_id = ($1)",
       [req.params.productId]
     );
-    res.status(200).send(rows[0]);
+    if (rows.length === 0) {
+      res.status(201).send("Product does not exist.");
+    } else {
+      res.status(200).send(rows[0]);
+    }
   } catch {
     res.status(404).send("Cannot find product.");
   }
