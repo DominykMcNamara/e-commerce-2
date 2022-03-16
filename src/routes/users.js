@@ -17,7 +17,7 @@ const router = new Router();
  *  get:
  *    summary: Get all users
  *    tags: [Users]
- * 
+ *
  *    responses:
  *      200:
  *          description: A list of all users.
@@ -49,18 +49,18 @@ const router = new Router();
  *      400:
  *          description: Users cannot be found.
  */
-router.get('/', async (req, res) => {
-    try {
-        const { rows } = await db.query('SELECT * FROM users')
-       if (rows.length === 0) {
-           res.status(200).send('There are currently no users')
-       } else {
-           res.status(200).send(rows)
-       }
-    } catch (err) {
-        res.status(400).send('Users cannot be found.')
+router.get("/", async (req, res) => {
+  try {
+    const { rows } = await db.query("SELECT * FROM users");
+    if (rows.length === 0) {
+      res.status(200).send("There are currently no users");
+    } else {
+      res.status(200).send(rows);
     }
-})
+  } catch (err) {
+    res.status(400).send("Users cannot be found.");
+  }
+});
 /**
  * @swagger
  * /users/{userId}:
@@ -102,19 +102,228 @@ router.get('/', async (req, res) => {
  *                                  description: The user's password
  *                                  example: 1223dsad
  *          400:
- *              description: User cannot be found.      
+ *              description: User cannot be found.
  */
-router.get('/:userId', async(req, res) => {
+router.get("/:userId", async (req, res) => {
+  try {
+    const { rows } = await db.query("SELECT * FROM users WHERE user_id = $1", [
+      req.params.userId,
+    ]);
+    if (rows.length === 0) {
+      res.status(201).send("User does not exist.");
+    } else {
+      res.status(201).send(rows[0]);
+    }
+  } catch {
+    res.status(400).send("User cannot be found.");
+  }
+});
+//POST ROUTE
+/**
+ *  @swagger
+ * /users/register:
+ *  post:
+ *      summary: Create a new user.
+ *      tags: [Users]
+ *      parameters:
+ *          - name: body
+ *            in: body
+ *            required: true
+ *
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                              description: The user's email.
+ *                              example: DominykSmith@gmail.com
+ *                          name:
+ *                              type: string
+ *                              description: The user's name.
+ *                              example: Dominyk McNamara
+ *                          username:
+ *                              type: string
+ *                              description: The user's username
+ *                              example: DominykMcNamara
+ *                          password:
+ *                              type: string
+ *                              description: The user's password
+ *                              example: HelloWorld123!
+ *                      required:
+ *                          -  email
+ *                          -  name
+ *                          -  username
+ *                          -  password
+ *
+ *      responses:
+ *          201:
+ *              description: Successfully created a new user.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                          user_id:
+ *                              type: integer
+ *                              description: The user's ID.
+ *                              example: 1
+ *                          email:
+ *                              type: string
+ *                              description: The user's email
+ *                              example: domniykMcNamara@gmail.com
+ *                          name:
+ *                              type: string
+ *                              description: The user's name.
+ *                              example: Dominyk McNamara
+ *
+ *                          username:
+ *                                  type: string
+ *                                  description: user's username
+ *                                  example: DominykMcNamara
+ *                          password:
+ *                                  type: string
+ *                                  description: The user's password
+ *                                  example: HelloWorld123!
+ *
+ *          400:
+ *              description: Failed to create a new user
+ *
+ *
+ */
+router.post("/register", async (req, res) => {
+  try {
+    const { email, name, username, password } = req.body;
+    const { rows } = await db.query(
+      "INSERT INTO users (email, name, username, password) VALUES ($1, $2, $3, $4)",
+      [email, name, username, password]
+    );
+    res.status(201).send("User successfully created.");
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+//PUT ROUTES
+/**
+ * @swagger
+ * /users/{userId}:
+ *  put:
+ *      summary: Update a user's information.
+ *      tags: [Users]
+ *      parameters:
+ *         - name: body
+ *           in: body
+ *           required: true
+ *           description: Updated user information.
+ *         - name: userId
+ *           in: path
+ *           required: true
+ *           description: ID of the user to update.
+ *           schema:
+ *              type: integer
+ *          
+ *
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                              description: user's updated email.
+ *                              example: DominykMcNamara@gmail.com
+ *                          name:
+ *                              type: string
+ *                              description: User's updated name.
+ *                              example: Dominyk McNamara
+ *                          username:
+ *                              type: string
+ *                              description: User's updated username.
+ *                              example: DominykMcNamara
+ *                          password:
+ *                              type: string
+ *                              description: User's updated password.
+ *                              example: HelloWorld123
+ * 
+ *      responses:
+ *          201:
+ *              description: Successfully updated the user.
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              user_id:
+ *                                  type: integer
+ *                                  description: The user_id of the updated user.
+ *                                  example: 1
+ *                              email:
+ *                                  type: string
+ *                                  description: The updated email of the user.
+ *                                  example: DominykMcNamara@gmail.com
+ *                              name:
+ *                                  type: string
+ *                                  description: The updated name of the user.  
+ *                                  example: Dominyk McNamara
+ *                              username:
+ *                                  type: string
+ *                                  description: The updated username of the user
+ *                                  example: DominykMcNamara
+ *                              password:
+ *                                  type: string
+ *                                  description: The updated password of the user
+ *                                  example: HelloWorld123!
+ * 
+ *          400:
+ *              description: User could not be updated        
+ *
+ *
+ */
+router.put("/:userId", async (req, res) => {
     try {
-        const { rows } = await db.query('SELECT * FROM users WHERE user_id = $1', [req.params.userId])
-        if (rows.length === 0) {
-            res.status(201).send('User does not exist.')
-        } else {
-            res.status(201).send(rows[0])
-        }
+       const  { email, name, username, password} = req.body
+       const { rows } = await db.query("UPDATE users SET email = $1, name = $2, username = $3, password = $4 WHERE user_id = $5", [email, name, username, password, req.params.userId])
+       res.status(200).send('User successfully updated.')
     } catch {
-        res.status(400).send("User cannot be found.")
+        res.status(400).send('Failed to updated user.')
     }
 })
-
+//DELETE ROUTES
+/**
+ * @swagger
+ * /users/{userId}:
+ *   delete:
+ *    summary: Delete a single user.
+ *    tags: [Users]
+ *    parameters:
+ *      - name: userId
+ *        in: path
+ *        required: true
+ *        description: The ID of the user to delete
+ *        schema:
+ *         type: integer
+ *
+ *    responses:
+ *      201:
+ *          description: User successfully deleted.
+ *
+ *      400:
+ *          description: User cannot be found.
+ */
+ router.delete("/:userId", async (req, res) => {
+    try {
+      const { rows } = await db.query(
+        "DELETE FROM users WHERE user_id = $1",
+        [req.params.userId]
+      );
+      res.status(200).send("User successfully deleted");
+    } catch {
+      res.status(404).send("Failed to delete user.");
+    }
+  });
 module.exports = router;

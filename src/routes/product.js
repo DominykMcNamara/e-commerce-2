@@ -182,8 +182,8 @@ router.post("/", async (req, res) => {
       [name, description, price]
     );
     res.status(201).send("Product successfully created.");
-  } catch {
-    res.status(400).send("Cannot create product.");
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 //PUT ROUTES
@@ -191,13 +191,13 @@ router.post("/", async (req, res) => {
  * @swagger
  * /product/{productId}:
  *  put:
- *    summary: Update a new product.
+ *    summary: Update a product's information.
  *    tags: [Product]
  *    parameters:
  *      - name: body
  *        in: body
  *        required: true
- *        description: Updated product info
+ *        description: Updated product information.
  *      - name: productId
  *        in: path
  *        required: true
