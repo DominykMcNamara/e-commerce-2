@@ -24,7 +24,7 @@ const swaggerOptions = {
       },
     ]
   },
-  apis: ["src/routes/product.js", "src/routes/users.js"],
+  apis: ["src/routes/product.js", "src/routes/users.js", "src/routes/cart.js"],
 };
 
 //EXPRESS CONFIGURATION
