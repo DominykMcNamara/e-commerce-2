@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
       res.status(200).send(rows);
     }
   } catch (err) {
-    res.status(400).send("No carts can be found.");
+    res.status(400).send(err);
   }
 });
 /**
@@ -83,8 +83,8 @@ router.get("/", async (req, res) => {
       } else {
         res.status(201).send(rows[0]);
       }
-    } catch {
-      res.status(400).send("Cart cannot be found.");
+    } catch (err) {
+      res.status(400).send(err);
     }
   });
  //POST ROUTE
@@ -118,8 +118,8 @@ router.post('/', async(req, res) => {
         const getRandomNumber = Math.floor(Math.random() * 10000)
         const { rows } = await db.query("INSERT INTO cart (cart_id) VALUES ($1)", [getRandomNumber])
         res.status(201).send("Successfully created a new cart.")
-    } catch {
-        res.status(400).send('Failed to create a new cart.')
+    } catch (err) {
+        res.status(400).send(err)
     }
 })
 //PUT ROUTES
@@ -216,8 +216,8 @@ router.post('/', async(req, res) => {
         [req.params.cartId]
       );
       res.status(200).send("Cart successfully deleted");
-    } catch {
-      res.status(404).send("Failed to delete cart.");
+    } catch (err) {
+      res.status(404).send(err);
     }
   });
 

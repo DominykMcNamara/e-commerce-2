@@ -58,7 +58,7 @@ router.get("/", async (req, res) => {
       res.status(200).send(rows);
     }
   } catch (err) {
-    res.status(400).send("Users cannot be found.");
+    res.status(400).send(err);
   }
 });
 /**
@@ -114,8 +114,8 @@ router.get("/:userId", async (req, res) => {
     } else {
       res.status(201).send(rows[0]);
     }
-  } catch {
-    res.status(400).send("User cannot be found.");
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 //POST ROUTE
@@ -289,8 +289,8 @@ router.put("/:userId", async (req, res) => {
        const  { email, name, username, password} = req.body
        const { rows } = await db.query("UPDATE users SET email = $1, name = $2, username = $3, password = $4 WHERE user_id = $5", [email, name, username, password, req.params.userId])
        res.status(200).send('User successfully updated.')
-    } catch {
-        res.status(400).send('Failed to updated user.')
+    } catch (err) {
+        res.status(400).send(err)
     }
 })
 //DELETE ROUTES
@@ -322,8 +322,8 @@ router.put("/:userId", async (req, res) => {
         [req.params.userId]
       );
       res.status(200).send("User successfully deleted");
-    } catch {
-      res.status(404).send("Failed to delete user.");
+    } catch (err) {
+      res.status(404).send(err);
     }
   });
 module.exports = router;

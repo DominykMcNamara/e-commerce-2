@@ -53,8 +53,8 @@ router.get("/", async (req, res) => {
     } else {
       res.status(200).send(rows);
     }
-  } catch {
-    res.status(404).send("Cannot find products.");
+  } catch (err) {
+    res.status(404).send(err);
   }
 });
 /**
@@ -110,8 +110,8 @@ router.get("/:productId", async (req, res) => {
     } else {
       res.status(200).send(rows[0]);
     }
-  } catch {
-    res.status(404).send("Cannot find product.");
+  } catch (err) {
+    res.status(404).send(err);
   }
 });
 //POST ROUTES
@@ -257,8 +257,8 @@ router.put("/:productId", async (req, res) => {
       [name, description, price, req.params.productId]
     );
     res.status(200).send("Product successfully updated.");
-  } catch {
-    res.status(400).send("Failed to update product.");
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 //DELETE ROUTES
@@ -290,8 +290,8 @@ router.delete("/:productId", async (req, res) => {
       [req.params.productId]
     );
     res.status(200).send("Product successfully deleted");
-  } catch {
-    res.status(404).send("Failed to delete product.");
+  } catch (err) {
+    res.status(404).send(err);
   }
 });
 

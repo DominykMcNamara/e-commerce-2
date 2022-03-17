@@ -13,18 +13,23 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "A simple REST API",
       license: {
-        name: 'Licensed Under MIT',
-        url: 'https://spdx.org/licenses/MIT.html',
-      }
+        name: "Licensed Under MIT",
+        url: "https://spdx.org/licenses/MIT.html",
+      },
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Development server',
+        url: "http://localhost:3000",
+        description: "Development server",
       },
-    ]
+    ],
   },
-  apis: ["src/routes/product.js", "src/routes/users.js", "src/routes/cart.js"],
+  apis: [
+    "src/routes/product.js",
+    "src/routes/users.js",
+    "src/routes/cart.js",
+    "src/routes/orders.js",
+  ],
 };
 
 //EXPRESS CONFIGURATION
