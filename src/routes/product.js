@@ -290,8 +290,8 @@ router.delete("/:productId", async (req, res) => {
       [req.params.productId]
     );
     res.status(200).send("Product successfully deleted");
-  } catch (err) {
-    res.status(404).send(err);
+  } catch {
+    res.status(404).send("Failed to delete product.");
   }
 });
 
